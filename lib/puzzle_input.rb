@@ -2,13 +2,13 @@
 class PuzzleInput
   def self.load(year, day)
     file_path = puzzle_path(year, day)
-    download(year, day) if !File.exist? file_path
+    download(year, day) unless File.exist? file_path
     File.read(file_path)
   end
 
   def self.create_required_directories(year)
     year_directory = File.join(ENV['AOC_INPUT_DIRECTORY'], year)
-    FileUtils.mkdir_p(year_directory) if !Dir.exist?(year_directory)
+    FileUtils.mkdir_p(year_directory) unless Dir.exist?(year_directory)
   end
 
   def self.puzzle_path(year, day)

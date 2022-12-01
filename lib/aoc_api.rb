@@ -5,7 +5,7 @@ class AocApi
 
   def initialize(year, session)
     @year = year
-    @options = { headers: { 'Cookie' => "session=#{session}" } }
+    @options = { headers: { 'Cookie' => "session=#{session}" }, verify: false }
   end
 
   def day(day_number)
