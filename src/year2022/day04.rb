@@ -5,7 +5,7 @@ module Year2022
       input.each_line do |assignment_pair|
         elf1_range, elf2_range = parse_assignment(assignment_pair)
 
-        if elf1_range.encloses?(elf2_range) || elf2_range.encloses?(elf1_range)
+        if elf1_range.cover?(elf2_range) || elf2_range.cover?(elf1_range)
           overlapping += 1
         end
       end
@@ -41,10 +41,6 @@ module Year2022
 end
 
 class Range
-  def encloses?(other)
-    self.begin <= other.begin && self.end >= other.end
-  end
-
   def overlaps?(other)
     !(self.end < other.begin || self.begin > other.end)
   end
