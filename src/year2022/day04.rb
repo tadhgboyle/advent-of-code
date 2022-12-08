@@ -1,5 +1,8 @@
 module Year2022
   class Day04
+    PART1_ANSWER = 448
+    PART2_ANSWER = 794
+
     def part1(input)
       overlapping = 0
       input.each_line do |assignment_pair|

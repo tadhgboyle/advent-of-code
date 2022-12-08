@@ -1,5 +1,10 @@
+require 'pathname'
+
 module Year2022
   class Day07
+    PART1_ANSWER = 1845346
+    PART2_ANSWER = 3636703
+
     def part1(input)
       dirs, sizes = generate_dirs_and_sizes(input: input)
 

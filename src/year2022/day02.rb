@@ -1,5 +1,8 @@
 module Year2022
   class Day02
+    PART1_ANSWER = 11063
+    PART2_ANSWER = 10349
+
     OPPONENT_ROCK = "A"
     OPPONENT_PAPER = "B"
     OPPONENT_SCISSORS = "C"

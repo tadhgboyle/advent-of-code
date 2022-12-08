@@ -1,5 +1,8 @@
 module Year2022
   class Day05
+    PART1_ANSWER = "FZCMJCRHZ"
+    PART2_ANSWER = "JSDHQMZGF"
+
     def part1(input)
       rows = []
       commands = []

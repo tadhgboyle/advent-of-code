@@ -1,4 +1,3 @@
-# HTTP API for downloading puzzles
 class AocApi
   include HTTParty
   base_uri "adventofcode.com"

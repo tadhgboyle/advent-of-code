@@ -1,6 +1,5 @@
 require 'benchmark'
 
-# Manage a solution's source file for a given day
 class PuzzleSource
   class << self
     def initialize_puzzle(year, day)
@@ -39,6 +38,9 @@ class PuzzleSource
       <<~TPL
       module Year#{year}
         class Day#{day}
+          PART1_ANSWER = ""
+          PART2_ANSWER = ""
+
           def part1(input)
             nil
           end

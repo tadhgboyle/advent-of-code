@@ -6,3 +6,4 @@ gem 'dotenv'
 gem 'httparty'
 gem 'rubocop', require: false
 gem 'thor'
+gem 'rspec'

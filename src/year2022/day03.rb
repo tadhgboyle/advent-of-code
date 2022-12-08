@@ -1,5 +1,8 @@
 module Year2022
   class Day03
+    PART1_ANSWER = 7848
+    PART2_ANSWER = 2616
+
     def part1(input)
       common_items = []
       input.each_line do |rucksack|

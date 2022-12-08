@@ -1,5 +1,8 @@
 module Year2022
   class Day06
+    PART1_ANSWER = 1093
+    PART2_ANSWER = 3534
+
     def part1(input)
       detect_unique_string(input, length: 4)
     end

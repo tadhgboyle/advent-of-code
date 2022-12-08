@@ -1,4 +1,3 @@
-# Puzzle input file management
 class PuzzleInput
   class << self
     def load(year, day)
@@ -9,7 +8,7 @@ class PuzzleInput
 
     def puzzle_input_path(year, day)
       day = Day.pad(day)
-      File.join(ENV["AOC_INPUT_DIRECTORY"], year, "day-#{day}")
+      File.join("input", year, "day-#{day}")
     end
 
     def download_input(year, day)
@@ -37,7 +36,7 @@ class PuzzleInput
     end
 
     def create_required_directories(year)
-      year_directory = File.join(ENV["AOC_INPUT_DIRECTORY"], year)
+      year_directory = File.join("input", year)
       FileUtils.mkdir_p(year_directory) unless Dir.exist?(year_directory)
     end
   end

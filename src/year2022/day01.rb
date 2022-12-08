@@ -1,5 +1,8 @@
 module Year2022
   class Day01
+    PART1_ANSWER = 67633
+    PART2_ANSWER = 199628
+
     def part1(input)
       highest_calories = 0
       current_amount = 0

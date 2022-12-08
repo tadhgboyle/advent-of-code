@@ -1,4 +1,3 @@
-# Helper for days
 class Day
   class << self
     def pad(day)
