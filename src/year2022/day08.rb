@@ -27,32 +27,14 @@ module Year2022
         row.shift
 
         row.each_with_index do |tree, col_idx|
+          tree = tree.to_i
           col_idx = col_idx + 1
 
-          above_trees, right_trees, below_trees, left_trees = trees_surrounding(field, row_idx, col_idx)
-
-          # check with above
-          if taller_than_all(tree, above_trees)
-            visible_trees += 1
-            next
-          end
-
-          # check with right
-          if taller_than_all(tree, right_trees)
-            visible_trees += 1
-            next
-          end
-
-          # check with below
-          if taller_than_all(tree, below_trees)
-            visible_trees += 1
-            next
-          end
-
-          # check with left
-          if taller_than_all(tree, left_trees)
-            visible_trees += 1
-            next
+          trees_surrounding(field, row_idx, col_idx).each do |trees|
+            if trees.all? { |t| tree > t }
+              visible_trees += 1
+              break
+            end
           end
         end
       end
@@ -98,10 +80,6 @@ module Year2022
 
     private
 
-    def taller_than_all(tree, trees)
-      trees.size > 0 && trees.all? { |t| t.to_i < tree.to_i }
-    end
-
     def trees_surrounding(field, row_idx, col_idx)
       above = (0..row_idx - 1).map { |i|
         field[i][col_idx]
@@ -121,7 +99,7 @@ module Year2022
 
     def count_can_see(tree, trees, reverse)
       if reverse
-        trees = trees.reverse
+        trees.reverse!
       end
 
       if trees.all? { |t| tree > t }
@@ -131,14 +109,10 @@ module Year2022
       see = 1
 
       trees.each do |t|
-        if t == tree
-          break
-        end
-
-        if t > tree
-          break
-        else
+        if tree > t
           see += 1
+        else
+          break
         end
       end
 
