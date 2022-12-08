@@ -10,39 +10,36 @@ Dir[src_files].each { |file| require file }
 
 # The CLI application
 class Aoc < Thor
-  desc 'bootstrap YEAR DAY', 'prepares a sample project for a given day:
-downloads the input & creates a sample source'
-  method_option :bootstrap, aliases: '-b'
+  desc 'bootstrap YEAR DAY', 'prepares a sample project for a given day: downloads the input & creates a sample source'
   def bootstrap(year, day)
-    ::PuzzleInput.download(year, day)
-    Template.create_templates(year, day)
+    PuzzleInput.download_input(year, day)
+    Template.create_source(year, day)
     puts "https://adventofcode.com/#{year}/day/#{day}"
   end
 
   desc 'run YEAR DAY', 'executes a given day/year'
-  method_option :run_day, aliases: '-r'
   def run_day(year, day)
-    puzzle = PuzzleSource.create_puzzle(year, day)
-    input = PuzzleInput.load(year, day)
-    PuzzleSource.run_part('part 1') { puzzle.part1(input) }
+    part1(year, day)
     puts
-    PuzzleSource.run_part('part 2') { puzzle.part2(input) }
+    part2(year, day)
   end
 
   desc 'part1 YEAR DAY', 'executes the part1 for a given day/year'
-  method_option :part1
   def part1(year, day)
-    puzzle = PuzzleSource.create_puzzle(year, day)
+    puzzle = PuzzleSource.initialize_puzzle(year, day)
     input = PuzzleInput.load(year, day)
-    PuzzleSource.run_part('part 1') { puzzle.part1(input) }
+    PuzzleSource.run_part('part 1') do
+      puzzle.part1(input)
+    end
   end
 
   desc 'part2 YEAR DAY', 'executes the part2 for a given day/year'
-  method_option :part2
   def part2(year, day)
-    puzzle = PuzzleSource.create_puzzle(year, day)
+    puzzle = PuzzleSource.initialize_puzzle(year, day)
     input = PuzzleInput.load(year, day)
-    PuzzleSource.run_part('part 2') { puzzle.part2(input) }
+    PuzzleSource.run_part('part 2') do
+      puzzle.part2(input)
+    end
   end
 end
 
