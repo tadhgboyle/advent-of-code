@@ -7,7 +7,7 @@ module Year2022
       visible_trees = 0
 
       field = input.each_line.map do |line|
-        line.chomp.chars
+        line.chomp.chars.map(&:to_i)
       end
 
       # add outside edge trees
@@ -17,7 +17,7 @@ module Year2022
         # skip first and last rows, they are edges
         if row_idx == 0
           next
-        elsif row_idx == field.size - 1
+        elsif row_idx == row.size - 1
           next
         end
 
@@ -27,11 +27,10 @@ module Year2022
         row.shift
 
         row.each_with_index do |tree, col_idx|
-          tree = tree.to_i
           col_idx = col_idx + 1
 
           trees_surrounding(field, row_idx, col_idx).each do |trees|
-            if trees.all? { |t| tree > t }
+            if trees.max < tree
               visible_trees += 1
               break
             end
@@ -46,32 +45,16 @@ module Year2022
       scenic_scores = []
 
       field = input.each_line.map do |line|
-        line.chomp.chars
+        line.chomp.chars.map(&:to_i)
       end
 
       field.each_with_index do |row, row_idx|
-        # skip first and last rows, they are edges
-        if row_idx == 0
-          next
-        elsif row_idx == field.size - 1
-          next
-        end
-
-        # skip first and last from row, they are edges
-        row = row.dup
-        row.pop
-        row.shift
-
         row.each_with_index do |tree, col_idx|
-          tree = tree.to_i
-          col_idx = col_idx + 1
-
-          above_trees, right_trees, below_trees, left_trees = trees_surrounding(field, row_idx, col_idx)
-
-          scenic_scores <<
-              { above_trees => true, right_trees => false, below_trees => false, left_trees => true}.map do |trees, reverse|
-                count_can_see(tree, trees, reverse)
-              end.reduce(1, :*)
+          scenic_scores.append(
+            trees_surrounding(field, row_idx, col_idx).map do |trees|
+              count_can_see(tree, trees)
+            end.reduce(:*)
+          )
         end
       end
 
@@ -83,25 +66,22 @@ module Year2022
     def trees_surrounding(field, row_idx, col_idx)
       above = (0..row_idx - 1).map { |i|
         field[i][col_idx]
-      }.map(&:to_i)
+      }.reverse
       right = (col_idx + 1..field.size - 1).map { |i|
         field[row_idx][i]
-      }.map(&:to_i)
+      }
       below = (row_idx + 1..field.size - 1).map { |i|
         field[i][col_idx]
-      }.map(&:to_i)
+      }
       left = (0..col_idx - 1).map { |i|
         field[row_idx][i]
-      }.map(&:to_i)
+      }.reverse
 
       [above, right, below, left]
     end
 
-    def count_can_see(tree, trees, reverse)
-      if reverse
-        trees.reverse!
-      end
-
+    def count_can_see(tree, trees)
+      # why do i need this
       if trees.all? { |t| tree > t }
         return trees.size
       end
@@ -109,11 +89,9 @@ module Year2022
       see = 1
 
       trees.each do |t|
-        if tree > t
-          see += 1
-        else
-          break
-        end
+        break unless tree > t
+
+        see += 1
       end
 
       see
