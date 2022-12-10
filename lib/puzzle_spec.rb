@@ -21,12 +21,12 @@ class PuzzleSpec
       RSpec.describe Year#{year}::Day#{day} do
         it "solves part1" do
           d = Year#{year}::Day#{day}.new
-          expect(d.part1(PuzzleInput.load("#{2022}", "#{day}"))).to eq(d::PART1_ANSWER)
+          expect(d.part1(PuzzleInput.load("#{2022}", "#{day}"))).to eq(Year#{year}::Day#{day}::PART1_ANSWER)
         end
 
         it "solves part2" do
           d = Year#{year}::Day#{day}.new
-          expect(d.part2(PuzzleInput.load("#{2022}", "#{day}"))).to eq(d::PART2_ANSWER)
+          expect(d.part2(PuzzleInput.load("#{2022}", "#{day}"))).to eq(Year#{year}::Day#{day}::PART2_ANSWER)
         end
       end
       TPL
