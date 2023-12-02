@@ -15,7 +15,7 @@ module Year2022
             char = "z"
             end_pos = [row, column]
           end
-          char.ord - 96
+          char.ord
         end
       end
 
@@ -24,8 +24,8 @@ module Year2022
       valid_coords = -> (adj_r, adj_c, r, c) {
         return false if adj_r < 0 || adj_c < 0
         return false if adj_r >= grid.length || adj_c >= grid.first.length
-        return false if grid[adj_r][adj_c] - grid[r][c] > 1
         return false if visited.include?([adj_r, adj_c])
+        return false if grid[adj_r][adj_c] - grid[r][c] > 1 && adj_c > c
 
         return true
       }
@@ -51,6 +51,7 @@ module Year2022
 
           if [adjacent_r, adjacent_c] == end_pos
             found = true
+            p "FOUND #{visited.size}"
             visited_grid[r][c] = if move_row[i] == -1
                                    "^"
                                  elsif move_row[i] == 1
