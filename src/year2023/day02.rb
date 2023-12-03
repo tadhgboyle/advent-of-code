@@ -1,7 +1,7 @@
 module Year2023
   class Day02
     PART1_ANSWER = 2771 # 8 test
-    PART2_ANSWER = ""
+    PART2_ANSWER = 70924 # 2286 test
 
     MAX_CUBES = {
       "red" => 12,
@@ -37,7 +37,27 @@ module Year2023
     end
 
     def part2(input)
-      nil
+      game_powers = []
+      input.each_line do |line|
+        cube_maxes = {}
+
+        line.chomp!
+        sets = line.split(": ").drop(1).join.split("; ")
+        sets.each do |set|
+          cubes = set.split(", ")
+          cubes.each do |cube|
+            cube = cube.split(" ")
+            count = cube.first.to_i
+            colour = cube.last
+            cube_maxes[colour] ||= 0
+            if cube_maxes[colour] < count
+              cube_maxes[colour] = count
+            end
+          end
+        end
+        game_powers << cube_maxes.values.inject(:*)
+      end
+      game_powers.sum
     end
   end
 end
