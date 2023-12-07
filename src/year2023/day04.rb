@@ -41,7 +41,28 @@ module Year2023
     end
 
     def part2(input)
-      nil
+      all_card_counts = {}
+      card_matches = {}
+
+      input.each_line do |card|
+        card.chomp!
+        card_number, matches = parse_card(card)
+        card_matches[card_number] = matches
+        all_card_counts[card_number] = 1
+      end
+
+      next_card_number = 1
+      while next_card_number < card_matches.keys.max
+        matches = card_matches[next_card_number]
+        matches.times do |n|
+          all_card_counts[next_card_number + n + 1] += 0
+        end
+        next_card_number += 1
+      end
+
+      p all_card_counts
+
+      all_card_counts.values.sum
     end
 
     private
