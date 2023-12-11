@@ -1,21 +1,51 @@
 module Year2023
   class Day05
     PART1_ANSWER = 31599214 # 35 test
-    PART2_ANSWER = ""
+    PART2_ANSWER = "" # 46 test
+
+    ALL_MAPS = {
+      "seed-to-soil" => [],
+      "soil-to-fertilizer" => [],
+      "fertilizer-to-water" => [],
+      "water-to-light" => [],
+      "light-to-temperature" => [],
+      "temperature-to-humidity" => [],
+      "humidity-to-location" => [],
+    }
 
     def part1(input)
+      seeds = ingest_maps(input)
+
+      lowest_location_for_seeds(seeds)
+    end
+
+    # this works but just never finishes with the full dataset
+    def part2(input)
+      seed_batches = ingest_maps(input).each_slice(2).map do |start, range|
+        (start..(start + (range - 1))).to_a
+      end
+
+      p "got seed batches"
+
+      lowest_location = nil
+
+      seed_batches.each do |seeds|
+        location = lowest_location_for_seeds(seeds)
+        if lowest_location.nil? || location <= lowest_location
+          p "new lowest #{location}"
+          lowest_location = location
+        end
+      end
+
+      p lowest_location
+
+      lowest_location
+    end
+
+    private
+
+    def ingest_maps(input)
       seeds = []
-
-      all_maps = {
-        "seed-to-soil" => [],
-        "soil-to-fertilizer" => [],
-        "fertilizer-to-water" => [],
-        "water-to-light" => [],
-        "light-to-temperature" => [],
-        "temperature-to-humidity" => [],
-        "humidity-to-location" => [],
-      }
-
       current_map = nil
       input.each_line do |line|
         line.chomp!
@@ -24,42 +54,58 @@ module Year2023
         if line.start_with?("seeds: ")
           seeds = line.split(": ").drop(1).first.split(" ").map(&:to_i)
         elsif line[0] =~ /\A[-+]?[0-9]+\z/
-          all_maps[current_map] << line.split(" ").map(&:to_i)
-        elsif line[0].is_a?(String)
+          ALL_MAPS[current_map] << line.split(" ").map(&:to_i)
+        else
           current_map = line.split(" ").first
         end
       end
 
+      seeds
+    end
+
+    def lowest_location_for_seeds(seeds)
       seed_location_numbers = {}
+
+      seed_soil_numbers = {}
+      soil_fertilizer_numbers = {}
+      fertilizer_water_numbers = {}
+      water_light_numbers = {}
+      light_temperature_numbers = {}
+      temperature_humidity_numbers = {}
+      humidity_location_numbers = {}
+
       seeds.each do |seed|
-        p "--- seed #{seed} ---"
-        soil = convert(via: "seed-to-soil", id: seed, all_maps: all_maps)
-        fertilizer = convert(via: "soil-to-fertilizer", id: soil, all_maps: all_maps)
-        water = convert(via: "fertilizer-to-water", id: fertilizer, all_maps: all_maps)
-        light = convert(via: "water-to-light", id: water, all_maps: all_maps)
-        temperature = convert(via: "light-to-temperature", id: light, all_maps: all_maps)
-        humidity = convert(via: "temperature-to-humidity", id: temperature, all_maps: all_maps)
-        location = convert(via: "humidity-to-location", id: humidity, all_maps: all_maps)
-        
+        next if seed_location_numbers[seed]
+      
+        soil = convert_with_cache(seed_soil_numbers, via: "seed-to-soil", id: seed)
+        fertilizer = convert_with_cache(soil_fertilizer_numbers, via: "soil-to-fertilizer", id: soil)
+        water = convert_with_cache(fertilizer_water_numbers, via: "fertilizer-to-water", id: fertilizer)
+        light = convert_with_cache(water_light_numbers, via: "water-to-light", id: water)
+        temperature = convert_with_cache(light_temperature_numbers, via: "light-to-temperature", id: light)
+        humidity = convert_with_cache(temperature_humidity_numbers, via: "temperature-to-humidity", id: temperature)
+        location = convert_with_cache(humidity_location_numbers, via: "humidity-to-location", id: humidity)
+      
         seed_location_numbers[seed] = location
       end
-
-      p seed_location_numbers
       
       seed_location_numbers.values.min
     end
 
-    def part2(input)
-      nil
-    end
+    def convert_with_cache(cache, via:, id:)
+      if cache[id]
+        result = cache[id]
+      else
+        result = convert(via: via, id: id)
+        cache[id] = result
+      end
+    
+      result
+    end    
 
-    private
-
-    def convert(via:, id:, all_maps:)
-      p "--- #{via} ---"
-      maps = all_maps[via]
+    def convert(via:, id:)
+      maps = ALL_MAPS[via]
       source = id
-      destination = nil
+      destination = source
 
       maps.each do |map|
         destination_range_start = map[0]
@@ -68,31 +114,13 @@ module Year2023
 
         source_range_end = source_range_start + range_length
 
-        if source < source_range_start
-          p "source less than source range start"
-          next
-        end
-
         difference = source - source_range_start
-        p "diff #{difference}, source #{source}, sr start #{source_range_start}, sr end #{source_range_end}, range #{range_length}"
 
         if source >= source_range_start && source <= source_range_end
-          p "source range covers #{source + difference}"
           destination = destination_range_start + difference
           break
-        else
-          p "source range does not cover #{source + difference}"
         end
-
-        p "trying next map"
       end
-
-      if destination.nil?
-        p "using source as destination"
-        destination = source
-      end
-
-      p "found destination #{destination} for #{source}"
 
       destination
     end
