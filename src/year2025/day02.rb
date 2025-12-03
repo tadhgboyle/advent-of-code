@@ -38,7 +38,7 @@ module Year2025
       ranges.each do |range|
         range.each do |id|
           id = id.to_s
-          chunk_sizes_to_check = (1..id.length - 1)
+          chunk_sizes_to_check = (1..(id.length / 2).ceil)
           chunk_sizes_to_check.each do |chunk_size|
             if id.split("").each_slice(chunk_size).uniq.size == 1
               invalid_ids << id.to_i
