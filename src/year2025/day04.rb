@@ -6,38 +6,34 @@ module Year2025
     PART2_ANSWER = ""
 
     def part1(input)
-      diagram = input.each_line.map do |line|
-        line.chomp.chars
-      end
+      grid = input.each_line.map(&:chomp)
 
-      paper_positions = []
-
-      diagram.each_with_index do |row, y|
-        row.each_with_index do |cell, x|
-          next unless cell == "@"
-
-          paper_positions << [x, y]
-        end
-      end
-
+      height = grid.size
+      width = grid[0].size
       accessible_paper = 0
 
-      diagram.each_with_index do |row, y|
-        row.each_with_index do |cell, x|
-          next unless cell == "@"
+      adjacent_positions = [
+        [-1, -1], [-1, 0], [-1, 1],
+        [ 0, -1],          [ 0, 1],
+        [ 1, -1], [ 1, 0], [ 1, 1]
+      ]
 
-          adjacent_positions = [
-            [x - 1, y + 1],
-            [x, y + 1],
-            [x + 1, y + 1],
-            [x - 1, y],
-            [x + 1, y],
-            [x - 1, y - 1],
-            [x, y - 1],
-            [x + 1, y - 1],
-          ]
+      (0...height).each do |y|
+        (0...width).each do |x|
+          next unless grid[y][x] == "@"
 
-          rolls_adjacent = paper_positions.intersection(adjacent_positions).size
+          rolls_adjacent = 0
+
+          adjacent_positions.each do |ay, ax|
+            ay = y + ay
+            ax = x + ax
+
+            next unless ay.between?(0, height - 1) && ax.between?(0, width - 1)
+
+            if grid[ay][ax] == "@"
+              rolls_adjacent += 1
+            end
+          end
 
           accessible_paper += 1 if rolls_adjacent < 4
         end
