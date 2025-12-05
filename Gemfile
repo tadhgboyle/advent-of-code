@@ -7,3 +7,4 @@ gem "httparty"
 gem "rubocop", require: false
 gem "thor"
 gem "rspec"
+gem "pry"

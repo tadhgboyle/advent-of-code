@@ -36,7 +36,48 @@ module Year2025
     end
 
     def part2(input)
-      nil
+      battery_banks = input.split("\n").map { |bb| bb.split("").map(&:to_i) }
+
+      joltages = []
+
+      battery_banks.each do |bank|
+        largest_battery = nil
+        second_largest_battery = nil
+
+        indexed_bank = bank.map.with_index do |b, i|
+          { battery: b, index: i }
+        end
+
+        enabled_batteries = []
+
+        while enabled_batteries.size < 12
+          indexed_bank.each do |ib|
+            last_index ||= ib[:index]
+            next if ib[:index] < last_index
+
+            if enabled_batteries.empty?
+              enabled_batteries << ib
+              next
+            end
+
+            last_enabled = enabled_batteries.sort_by { |eb| -eb[:index] }[0]
+            second_last_enabled = enabled_batteries.sort_by { |eb| -eb[:index] }[1]
+            p "comparing second last enabled #{second_last_enabled} with ibi #{ib}"
+            if second_last_enabled && second_last_enabled[:battery] < ib[:battery] || last_enabled[:battery] == ib[:battery] || enabled_batteries.size < 12
+              enabled_batteries[-1] = ib
+              next
+            end
+            p "comparing last enabled #{last_enabled} with ibi #{ib}"
+            if last_enabled[:battery] < ib[:battery] || last_enabled[:battery] == ib[:battery]  || enabled_batteries.size < 12
+              enabled_batteries << ib
+            end
+          end
+        end
+
+        joltages << enabled_batteries.map { |eb| eb[:battery] }.join.to_i
+      end
+
+      joltages.sum
     end
   end
 end
