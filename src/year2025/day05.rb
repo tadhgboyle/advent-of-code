@@ -31,29 +31,34 @@ module Year2025
     end
 
     def part2(input)
-      possible_fresh_ingredients = Set.new
-
+      ranges = []
       input.chomp.split("\n").each do |line|
         break if line == ""
+        start_val, end_val = line.split("-").map(&:to_i)
 
-        ranged = line.split("-").map(&:to_i)
-        ranged[0].upto(ranged[1]).each do |i|
-          possible_fresh_ingredients << i
+        ranges << [start_val, end_val]
+      end
+
+      ranges.sort! { |a, b| a[0] <=> b[0] }
+
+      merged_ranges = [ranges.first]
+
+      ranges[1..].each do |current_range|
+        last_merged_range = merged_ranges.last
+
+        if current_range[0] <= last_merged_range[1] + 1
+          last_merged_range[1] = [last_merged_range[1], current_range[1]].max
+        else
+          merged_ranges << current_range
         end
       end
 
-      possible_fresh_ingredients.size
+      possible_fresh_ingredients = 0
+      merged_ranges.each do |start_val, end_val|
+        possible_fresh_ingredients += (end_val - start_val + 1)
+      end
 
-      # ranges = []
-
-      # input.chomp.split("\n").each do |line|
-      #   break if line == ""
-
-      #   ranged = line.split("-").map(&:to_i)
-      #   ranges << (ranged[0]..ranged[1]).to_a
-      # end
-
-      # ranges.flatten.uniq.size
+      possible_fresh_ingredients
     end
   end
 end
